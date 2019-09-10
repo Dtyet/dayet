@@ -17,7 +17,7 @@ public class AuthorizeController {
     @Autowired
     private GIthubProvider gIthubProvider;
     @GetMapping("/callback")
-    public String callback(@RequestParam(name = "name")String code,
+    public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state") String state){
         AccesstTokenDTO accesstTokenDTO = new AccesstTokenDTO();
         accesstTokenDTO.setClient_id("a4a8384dffdd71b1c8c1");
