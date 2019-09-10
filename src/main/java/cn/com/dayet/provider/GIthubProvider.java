@@ -41,7 +41,7 @@ public class GIthubProvider {
         try{
             Response response = client.newCall(request).execute();
             String string= response.body().string();
-//            System.out.println(string+"dsadsad");
+            System.out.println(string);
             GIthupUser gIthupUser = JSON.parseObject(string, GIthupUser.class);
             System.out.println(gIthupUser.getName());
             return gIthupUser;

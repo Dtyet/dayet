@@ -4,6 +4,7 @@ import cn.com.dayet.dto.AccesstTokenDTO;
 import cn.com.dayet.dto.GIthupUser;
 import cn.com.dayet.provider.GIthubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,16 +16,24 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class AuthorizeController {
+    //读取
     @Autowired
     private GIthubProvider gIthubProvider;
+    //读取配置中常量值
+    @Value("${github.client.id}")
+    private String Client_id;
+    @Value("${github.client.secret}")
+    private String setClient_secret;
+    @Value("${github.redirect.url}")
+    private String Redirect_uri;
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state") String state){
         AccesstTokenDTO accesstTokenDTO = new AccesstTokenDTO();
-        accesstTokenDTO.setClient_id("a4a8384dffdd71b1c8c1");
-        accesstTokenDTO.setClient_secret("924875abac84b1d07093d663096f0bf1340e73ce");
+        accesstTokenDTO.setClient_id(Client_id);
+        accesstTokenDTO.setClient_secret(setClient_secret);
         accesstTokenDTO.setCode(code);
-        accesstTokenDTO.setRedirect_uri("http://localhost/callback");
+        accesstTokenDTO.setRedirect_uri(Redirect_uri);
         accesstTokenDTO.setState(state);
         String accessToken = gIthubProvider.getAccessToken(accesstTokenDTO);
         GIthupUser user = gIthubProvider.getuser(accessToken);
