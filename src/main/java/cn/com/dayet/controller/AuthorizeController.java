@@ -1,6 +1,7 @@
 package cn.com.dayet.controller;
 
 import cn.com.dayet.dto.AccesstTokenDTO;
+import cn.com.dayet.dto.GIthupUser;
 import cn.com.dayet.provider.GIthubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,9 @@ public class AuthorizeController {
         accesstTokenDTO.setCode(code);
         accesstTokenDTO.setRedirect_uri("http://localhost/callback");
         accesstTokenDTO.setState(state);
-        gIthubProvider.getAccessToken(accesstTokenDTO);
+        String accessToken = gIthubProvider.getAccessToken(accesstTokenDTO);
+        GIthupUser user = gIthubProvider.getuser(accessToken);
+        System.out.println(user.getName());
         return "index";
     }
 }
