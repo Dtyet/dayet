@@ -22,6 +22,7 @@ public class AuthorizeController {
     //读取
     @Autowired
     private GIthubProvider gIthubProvider;
+    private UserMapper userMapper;
     //读取配置中常量值
     @Value("${github.client.id}")
     private String Client_id;
@@ -29,8 +30,7 @@ public class AuthorizeController {
     private String setClient_secret;
     @Value("${github.redirect.url}")
     private String Redirect_uri;
-    @Autowired
-    private UserMapper userMapper;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state") String state,
