@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dayet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <script type="text/javascript" src="bigdata01/js/jquery.js"></script>
+    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script type="text/javascript" src="bigdata01/js/echarts.min.js"></script>
+    <script type="text/javascript" src="bigdata01/js/js.js"></script>
+    <script type="text/javascript" src="bigdata01/js/jquery.limarquee.js"></script>
+    <script type="text/javascript" src="bigdata01/js/jquery.cxselect.min.js"></script>
+    <link rel="stylesheet" href="bigdata01/css/comon0.css">
+</head>
+<body>
+<nav class="navbar navbar-default" style=background:#2691ef8a;>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="publish">Dayet大数据社区</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li ><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/publish">微博数据分析</a></li>
+                <li ><a href="#">微信数据分析</a></li>
+                <li ><a href="#">知乎数据分析</a></li>
+                <li ><a href="#">BOSS数据分析</a></li>
+                <li ><a href="#">智联数据分析</a></li>
+                <li ><a href="#">闲鱼数据分析</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分析工具 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">用户数据</a></li>
+                        <li><a href="#">热点数据</a></li>
+                        <li><a href="#">热搜数据</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">其他数据</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜索内容">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" th:if="${session.user !=null}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}"> <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">消息中心</a></li>
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">退出登录</a></li>
+                    </ul>
+                </li>
+                <button type="button" class="btn btn-default navbar-btn" style="background: #1c39ff" th:if="${session.user == null}" >
+                    <a href="https://github.com/login/oauth/authorize?client_id=a4a8384dffdd71b1c8c1&redirect_uri=http://localhost/callback&scope=user&state=1" style="color: #e8e8e800">登录</a>
+                </button>
+                <button type="button" class="btn btn-default navbar-btn" style="background: #1c39ff" th:if="${session.user == null}" >
+                    <a href="#" style="color: #e8e8e800">注册</a>
+                </button>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div style="background:#000d4a url(/bigdata01/images/bg.jpg) center top;">
+    <div class="loading">
+        <div class="loadbox"> <img src="bigdata01/picture/loading.gif"> 页面加载中... </div>
+    </div>
+    <div class="back"></div>
+    <div class="head">
+        <div class="weather"><span id="showTime"></span></div>
+        <h1 > 大数据可视化</h1>
+
+    </div>
+    <script>
+        var t = null;
+        t = setTimeout(time,1000);//開始运行
+        function time()
+        {
+            clearTimeout(t);//清除定时器
+            dt = new Date();
+            var y=dt.getFullYear();
+            var mt=dt.getMonth()+1;
+            var day=dt.getDate();
+            var h=dt.getHours();//获取时
+            var m=dt.getMinutes();//获取分
+            var s=dt.getSeconds();//获取秒
+            document.getElementById("showTime").innerHTML = y+"年"+mt+"月"+day+"日"+h+"时"+m+"分"+s+"秒";
+            t = setTimeout(time,1000); //设定定时器，循环运行
+        }
+
+    </script>
+    <div class="mainbox">
+        <ul class="clearfix">
+            <li>
+                <div class="boxall" style="height:400px;">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall" id="echart5"></div>
+                </div>
+                <div class="boxall" style="height:260px;">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall" >
+                        <div class="wraptit">
+                            <span>单号</span><span>金额</span><span>品名</span><span>时间</span>
+                        </div>
+                        <div class="wrap">
+                            <ul>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+                                <li><p><span>100021415</span><span>199</span><span>手机</span><span>18小时</span></p></li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="boxall" style="height:260px;">
+                    <div class="alltitle">标题样式</div>
+
+                    <div class="navboxall" id="echart1"></div>
+                </div>
+            </li>
+            <li>
+
+                <div class="boxall" style="height:230px">
+                    <div class="clearfix navboxall" style="height: 100%">
+                        <div class="pulll_left num">
+                            <div class="numbt">总体情况<span>(单位：元)</span></div>
+                            <div class="numtxt">19382721 </div>
+                        </div>
+                        <div class="pulll_right zhibiao">
+                            <div class="zb1"><span>标题样式</span><div id="zb1"></div></div>
+                            <div class="zb2"><span>标题样式</span><div id="zb2"></div></div>
+                            <div class="zb3"><span>标题样式</span><div id="zb3"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="boxall" style="height:350px">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall" id="echart4"></div>
+
+                </div>
+                <div class="boxall" style="height:340px">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall" id="echart3"></div>
+                </div>
+            </li>
+            <li>
+                <div class="boxall" style="height:300px">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall">
+                        <table class="table1" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <th scope="col">排名</th>
+                                <th scope="col">公司</th>
+                                <th scope="col">数量</th>
+                                <th scope="col">增长率</th>
+                            </tr>
+                            <tr>
+                                <td><span>1</span></td>
+                                <td>腾讯科技</td>
+                                <td>114万<br></td>
+                                <td>100%<br></td>
+                            </tr>
+                            <tr>
+                                <td><span>2</span></td>
+                                <td>百度公司</td>
+                                <td>923823万</td>
+                                <td>21%</td>
+                            </tr>
+
+                            <tr>
+                                <td><span>3</span></td>
+                                <td>新浪</td>
+                                <td>1240253万</td>
+                                <td>12%</td>
+                            </tr>
+                            <tr>
+                                <td><span>4</span></td>
+                                <td>网易</td>
+                                <td>1.2亿</td>
+                                <td>39%</td>
+                            </tr>
+                            <tr>
+                                <td><span>5</span></td>
+                                <td>雅虎</td>
+                                <td>13423万</td>
+                                <td>9%</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="boxall" style="height: 300px">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall">
+                        <table class="table1" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <th scope="col">排名</th>
+                                <th scope="col">公司</th>
+                                <th scope="col">数量</th>
+                                <th scope="col">增长率</th>
+                            </tr>
+                            <tr>
+                                <td><span>1</span></td>
+                                <td>腾讯科技</td>
+                                <td>114万<br></td>
+                                <td>100%<br></td>
+                            </tr>
+                            <tr>
+                                <td><span>2</span></td>
+                                <td>百度公司</td>
+                                <td>923823万</td>
+                                <td>21%</td>
+                            </tr>
+
+                            <tr>
+                                <td><span>3</span></td>
+                                <td>新浪</td>
+                                <td>1240253万</td>
+                                <td>12%</td>
+                            </tr>
+                            <tr>
+                                <td><span>4</span></td>
+                                <td>网易</td>
+                                <td>1.2亿</td>
+                                <td>39%</td>
+                            </tr>
+                            <tr>
+                                <td><span>5</span></td>
+                                <td>雅虎</td>
+                                <td>13423万</td>
+                                <td>9%</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="boxall" style="height:320px">
+                    <div class="alltitle">标题样式</div>
+                    <div class="navboxall" id="echart2"></div>
+                </div>
+
+
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('.wrap,.adduser').liMarquee({
+            direction: 'up',//身上滚动
+            runshort: false,//内容不足时不滚动
+            scrollamount: 20//速度
+        });
+    });
+
+</script>
+
+</body>
+</html>
