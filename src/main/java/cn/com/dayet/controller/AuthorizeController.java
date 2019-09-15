@@ -3,6 +3,7 @@ package cn.com.dayet.controller;
 import cn.com.dayet.dto.AccesstTokenDTO;
 import cn.com.dayet.dto.GIthupUser;
 import cn.com.dayet.mapper.UserMapper;
+import cn.com.dayet.model.User;
 import cn.com.dayet.provider.GIthubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  * @author Dayet
@@ -42,10 +44,13 @@ public class AuthorizeController {
         accesstTokenDTO.setRedirect_uri(Redirect_uri);
         accesstTokenDTO.setState(state);
         String accessToken = gIthubProvider.getAccessToken(accesstTokenDTO);
-        GIthupUser user = gIthubProvider.getuser(accessToken);
-        if (user != null){
+        GIthupUser gIthupUser = gIthubProvider.getuser(accessToken);
+        if (gIthupUser != null){
+            User user1 = new User();
+            user1.setToken(UUID.randomUUID().toString());
+            userMapper.insert(user1);
             //登录成功
-            request.getSession().setAttribute("user",user);
+            request.getSession().setAttribute("user",gIthupUser);
             return "redirect:/";
         }else {
             //登录失败
